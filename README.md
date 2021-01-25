@@ -1,117 +1,30 @@
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Control;
-
-import Model.User;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 /**
  *
  * @author DELL
  */
-public class Dao {
-    private Connection con;
-    private Statement st;
-    
-    public Dao(){
-        conectDB();
-    }
-    
-    public void conectDB(){
-        String dbUrl = "jdbc:mysql://localhost:3306/hotel";
-        String dbClass = "com.mysql.jdbc.Driver";
-        try {
-            Class.forName(dbClass);
-            con = DriverManager.getConnection(dbUrl, "root", "10101999");
-            st = con.createStatement();
-            System.out.println("Connect succes!");
-        } catch (Exception e) {
-        }
-    }
-    
-    public boolean checkLogin(User user){
-        String  query = "Select * from tbluser where username = '"+user.getUserName()+"' and password ='"+user.getPassword()+"'";
-        System.out.println(query);
-        try {
-            ResultSet rs = st.executeQuery(query);
-            if (rs.next()) {
-                return true;
+public class pt {
+    public static void main(String[] args) {
+        long sss = 24*60*60*25567L;
+        short[] arr = {225,72,40,195,105,242,38,249,225,72,40,208,41,242,12,33,225,72,40,208,41,242,52,101};
+        for (int pos = 0; pos < 3; pos++) {
+            double time = 0.0;
+            int ind = pos*8;
+            for (int i = ind; i < ind+8; i++) {
+                time = time + arr[i] * Math.pow(2, (ind + 3 - i)*8);
             }
-        } catch (Exception e) {
+            String result = new SimpleDateFormat("YYYY:MM:dd HH:mm:ss.SSS").format(new Date((long)(1000*(time-sss)))) ;
+            System.out.println(result);
         }
-        return false;
     }
-    
-    public User getUserByUserName(String username){
-        String  query = "Select * from tbluser where username = '"+username+"'";
-        User u = new User();
-        System.out.println(query);
-        
-        try {
-            ResultSet rs = st.executeQuery(query);
-            if (rs.next()) {
-                u.setId(rs.getInt(1));
-                u.setUserName(rs.getString(2));
-                u.setPassword(rs.getString(3));
-            }
-        } catch (Exception e) {
-        }
-        return u;
-    }
-    
-    public boolean add(User user){
-        System.out.println(user.getUserName() + " " + user.getPassword());
-        String query = "Insert into tbluser(username, password, name, position) values(?, ?, ?, ?)";
-        System.out.println(query);
-        try {
-            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getUserName());
-            ps.setString(2, user.getPassword());
-            ps.setString(3, "no");
-            ps.setString(4, "no");
-            ps.executeUpdate();
-            
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                user.setId(rs.getInt(1));
-            }
-            return true;
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-	
-
-    
-    public boolean edit(User user){
-        String  query = "Update tbluser set username = '"+user.getUserName()+"',password ='"+user.getPassword()+"' where id = '"+user.getId()+"'";
-        System.out.println(query);
-        try {
-            if (st.executeUpdate(query) != -1) {
-                return true;
-            }
-        } catch (Exception e) {
-        }
-        return false;
-    }
-    
-    public void deleteClient(int id){
-		String sql = "DELETE FROM tblclient WHERE id=?";
-		try{
-			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, id);
-
-			ps.executeUpdate();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
 }
+
